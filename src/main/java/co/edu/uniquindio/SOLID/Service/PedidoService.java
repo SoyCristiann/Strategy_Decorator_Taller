@@ -10,6 +10,7 @@ import co.edu.uniquindio.SOLID.Service.Envio.Envio;
 import co.edu.uniquindio.SOLID.Service.Envio.EnvioExpress;
 import co.edu.uniquindio.SOLID.Service.Notificacion.Notificacion;
 import co.edu.uniquindio.SOLID.Service.Notificacion.NotificacionFactory;
+import co.edu.uniquindio.SOLID.Service.Observer.NotificadorCliente;
 import co.edu.uniquindio.SOLID.Service.Pago.MetodoPago;
 import co.edu.uniquindio.SOLID.Service.Pago.PagoFactory;
 
@@ -89,9 +90,14 @@ public class PedidoService {
         }
         return total;
     }
+
+
    
     public ResumenPedidoDTO procesarPedido(PedidoDTO pedidoDTO) {
         Pedido pedidoCreado = crearPedido(pedidoDTO);
+
+        pedidoCreado.addObserver(new NotificadorCliente());
+
         
         ResumenPedidoDTO resumen = new ResumenPedidoDTO();
         resumen.codigo = pedidoCreado.getCodigo();

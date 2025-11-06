@@ -1,9 +1,14 @@
 package co.edu.uniquindio.SOLID.Model;
 
+import co.edu.uniquindio.SOLID.Service.Observable.ObservablePedido;
+import co.edu.uniquindio.SOLID.Service.Observer.ObservadorPedido;
+import co.edu.uniquindio.SOLID.utils.Enums.EstadoPedido;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Pedido {
+public class Pedido implements ObservablePedido{
     private String codigo;
     private LocalDateTime fechaCreacion;
     private Cliente cliente;
@@ -11,6 +16,9 @@ public class Pedido {
     private String direccionEnvio;
     private String notas;
     private String codigoDescuento;
+    private EstadoPedido estado;
+
+    private List<ObservadorPedido> observadores;
 
     public Pedido(PedidoBuilder builder) {
         this.codigo = builder.codigo;
@@ -20,6 +28,8 @@ public class Pedido {
         this.direccionEnvio = builder.direccionEnvio;
         this.notas = builder.notas;
         this.codigoDescuento = builder.codigoDescuento;
+        this.observadores = new ArrayList<>();
+        this.estado = EstadoPedido.SOLICITADO;
     }
 
 
@@ -30,4 +40,32 @@ public class Pedido {
     public String getDireccionEnvio() {return direccionEnvio;}
     public String getNotas() {return notas;}
     public String getCodigoDescuento() {return codigoDescuento;}
+
+    public EstadoPedido getEstado() {return estado;}
+    public List<ObservadorPedido> getObservadores() {return observadores;}
+    public void setCodigo(String codigo) {this.codigo = codigo;}
+
+    public void setEstado(EstadoPedido estado) {
+        this.estado = estado;
+        notificarObservadores();
+
+    }
+
+    @Override
+    public void addObserver(ObservadorPedido o) {
+        observadores.add(o);
+
+    }
+
+    @Override
+    public void deleteObserver(ObservadorPedido o) {
+        observadores.remove(o);
+    }
+
+    @Override
+    public void notificarObservadores() {
+        for (ObservadorPedido o : observadores) {
+            o.actualizar(this);
+        }
+    }
 }
