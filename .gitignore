@@ -1,0 +1,8 @@
+bin/
+.idea/
+*.class
+*.iml
+out/
+.DS_Store
+*.log
+
